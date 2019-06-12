@@ -1,0 +1,29 @@
+{
+  "name": "AdminProcesos",
+  "version": "0.0.0",
+  "description": "app para monitorear y gestionar procesos de un server linux",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skrillfer/AppWebAdminProcesosLinux"
+  },
+  "keywords": [
+    "reporting",
+    "linux",
+    "server",
+    "process",
+    "web",
+    "app"
+  ],
+  "author": "Luis Fernando Ramirez Santos",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/skrillfer/AppWebAdminProcesosLinux/issues"
+  },
+  "dependencies": {
+    "express": "~4.17.1"
+  }
+}
