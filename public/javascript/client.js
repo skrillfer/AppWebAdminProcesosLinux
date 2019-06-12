@@ -8,7 +8,7 @@ var pila4=[];
 socket.on('meminfo_change', function(data) {
     var memoryData= [ (data.MemTotal-data.MemFree)/1000000,data.MemFree/1000000];
     PlotCPU_Graph();
-    PlotRAM_Graph(memoryData);
+    PlotRAM_Graph(memoryData,data.MemTotal,data.MemFree);
 });
 
 socket.on('statinfo_change1', function(data) {

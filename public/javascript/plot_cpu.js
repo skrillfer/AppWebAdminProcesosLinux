@@ -1,10 +1,15 @@
 var PieChartRAM=null;
+var PerformanceCPUGraph=null;
 function PlotCPU_Graph()
 {
-    
+    try {
+        PerformanceCPUGraph.destroy();    
+    } catch (error) {
+        
+    }
     var ctx = document.getElementById("CPU_PerformanceChart").getContext('2d');
 
-    var stackedLine = new Chart(ctx, {
+    PerformanceCPUGraph = new Chart(ctx, {
         type: 'line',
         data:  [{
             x: 10,
@@ -26,8 +31,14 @@ function PlotCPU_Graph()
 
 
 
-function PlotRAM_Graph(dataX)
+function PlotRAM_Graph(dataX,MemTotal,MemFree)
 {
+    var Libre = (MemFree/1000).toFixed(2);
+    var Ocupado = (MemTotal/1000-MemFree/1000).toFixed(2);
+    document.getElementById("SizeFree_RAM").textContent = Libre;
+    document.getElementById("SizeOcupado_RAM").textContent =  Ocupado;
+    document.getElementById("percentageUsage_RAM").textContent =  ((Ocupado*100)/(MemTotal/1000) ).toFixed(2) +"%";
+    
     try {
         PieChartRAM.destroy();    
     } catch (error) {

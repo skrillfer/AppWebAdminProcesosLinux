@@ -23,43 +23,83 @@
         </title>
     </head>
     <body>
+        <div class="container">
         <center><strong><h2>Administrador de Recursos del CPU</h2></strong></center>
         
-        <div class="container">
-            <div  class="row">
-                <div class="card" style="width: 18rem;">
-                        <canvas id="CPU_PerformanceChart" width="auto" height="auto"></canvas>
-                        <div class="card-body">
-                            <p class="card-text">CPU Performance</p>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#home">Lista Procesos</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#monitorCPU">Monitor CPU</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#monitorRAM">Monitor RAM</a>
+            </li>
+        </ul>
+        
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane container fade" id="home">...</div>
+            <div class="tab-pane container active" id="monitorCPU">
+                    <div  class="row">
+                        <div class="card" style="width: 18rem;">
+                                <canvas id="CPU_PerformanceChart" width="auto" height="auto"></canvas>
+                                <div class="card-body">
+                                    <p class="card-text">CPU Performance</p>
+                                </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <button type="button"  class="btn btn-success">CPU 1 :</button>
+                            <label id="cpu1_info"></label>
+        
+                        </div>
+                        <div class="col-sm">
+                            <button type="button"  class="btn btn-danger">CPU 2 :</button>
+                            <label id="cpu2_info"></label>
+        
+                        </div>
+                        <div class="col-sm">
+                            <button type="button"  class="btn btn-warning">CPU 3:</button>
+                            <label id="cpu3_info"></label>
+        
+                        </div>
+                        <div class="col-sm">
+                            <button type="button"  class="btn btn-info">CPU 4:</button>
+                            <label id="cpu4_info"></label>
+        
+                        </div>
+                    </div>
+                    
+            </div>
+            <div class="tab-pane container fade" id="monitorRAM">
+                <!--Pie Usage RAM-->
+                <hr/>
+                <div class="row">
+                        <canvas id="pie_chartRAM" width="150" height="150"></canvas>
+                
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                            <button type="button"  class="btn btn-success">Libre(MB):</button>
+                            <label id="SizeFree_RAM"></label>
+                    </div>
+                    <div class="col-sm">
+                            <button type="button"  class="btn btn-danger">Ocupado(MB):</button>
+                            <label id="SizeOcupado_RAM"></label>
+                    </div>
+                    <div class="col-sm">
+                        <button type="button"  class="btn btn-warning">Porcentaje Uso:</button>
+                        <label id="percentageUsage_RAM"></label>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm">
-                    <button type="button"  class="btn btn-success">CPU 1 :</button>
-                    <label id="cpu1_info"></label>
+        </div>
 
-                </div>
-                <div class="col-sm">
-                    <button type="button"  class="btn btn-danger">CPU 2 :</button>
-                    <label id="cpu2_info"></label>
-
-                </div>
-                <div class="col-sm">
-                    <button type="button"  class="btn btn-warning">CPU 3:</button>
-                    <label id="cpu3_info"></label>
-
-                </div>
-                <div class="col-sm">
-                    <button type="button"  class="btn btn-info">CPU 4:</button>
-                    <label id="cpu4_info"></label>
-
-                </div>
-            </div>
-            <!--Pie Usage RAM-->
-            <div class="row">
-                    <canvas id="pie_chartRAM" width="150" height="150"></canvas>
-            </div>
+        
             
         </div>
 
