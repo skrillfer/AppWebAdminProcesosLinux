@@ -56,10 +56,7 @@ function PlotRAM_Graph(dataX)
 }
 
 
-function plot_performanceCPU(id,a,b)
+function plot_performanceCPU(id,usage)
 {
-    //id="cpu1_info"
-    var loadavg = ((b[0]+b[1]+b[2]+b[4]+b[5]+b[6]) - (a[0]+a[1]+a[2]+a[4]+a[5]+a[6])) /((b[0]+b[1]+b[2]+b[3]+b[4]+b[5]+b[6]) - (a[0]+a[1]+a[2]+a[3]+a[4]+a[5]+a[6]));
-    loadavg =  loadavg *100;
-    document.getElementById("cpu"+id+"_info").textContent= loadavg.toFixed(2) + '%';
+    document.getElementById("cpu"+id+"_info").textContent= usage.toFixed(2) + '%';
 }

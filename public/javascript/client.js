@@ -7,40 +7,23 @@ var pila4=[];
 
 socket.on('meminfo_change', function(data) {
     var memoryData= [ (data.MemTotal-data.MemFree)/1000000,data.MemFree/1000000];
-    //console.log(data);
     PlotCPU_Graph();
     PlotRAM_Graph(memoryData);
 });
 
-socket.on('statinfo_change', function(data) {
-    if(pila1<1)
-    {
-        pila1.push(data.cpu0);
-        pila2.push(data.cpu1);
-        pila3.push(data.cpu2);
-        pila4.push(data.cpu3);
-    }else
-    {
-        var a=pila1.pop();
-        var b=data.cpu0;
-        plot_performanceCPU("1",a,b);
-        pila1.push(b);
+socket.on('statinfo_change1', function(data) {
+    plot_performanceCPU(data.id,data.usage);
+});
 
-        a=pila2.pop();
-        b=data.cpu1;
-        plot_performanceCPU("2",a,b);
-        pila2.push(b);
+socket.on('statinfo_change2', function(data) {
+    plot_performanceCPU(data.id,data.usage);
+});
 
-        a=pila3.pop();
-        b=data.cpu2;
-        plot_performanceCPU("3",a,b);
-        pila3.push(b);
+socket.on('statinfo_change3', function(data) {
+    plot_performanceCPU(data.id,data.usage);
+});
 
-        a=pila4.pop();
-        b=data.cpu3;
-        plot_performanceCPU("4",a,b);
-        pila4.push(b);
-    }
-    
+socket.on('statinfo_change4', function(data) {
+    plot_performanceCPU(data.id,data.usage);
 });
 

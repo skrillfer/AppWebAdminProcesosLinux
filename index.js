@@ -2,6 +2,12 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+/* _______________________ */
+var pila1=[];
+var pila2=[];
+var pila3=[];
+var pila4=[];
+/* _______________________ */
 
 const fs = require('fs');
 require('log-timestamp');
@@ -60,8 +66,7 @@ function Meminfo() {
 /* = ==============================STAT INFO======================================= = */
 fs.watchFile('/proc/stat', { recursive: true }, function(evt, name) {
   try {
-    io.sockets.emit('statinfo_change', Statinfo());
-    //console.log();
+    Statinfo();
   } catch (error) {
     console.log(error);
   }
@@ -76,11 +81,9 @@ function Statinfo() {
 
       // Ignore invalid lines, if any
       if (!line[0].includes('cpu')) {
-          console.log('NO:'+line[0]);
           return;
       }
       //console.log(line);
-      // Remove parseInt call to make all values strings
       if(line[0]=='cpu')
       {
         info[line[0]] = [parseInt(line[2].trim(), 10),
@@ -104,6 +107,43 @@ function Statinfo() {
       }
       
   });
+
+  if(pila1<1)
+  {
+      pila1.push(info.cpu0);
+      pila2.push(info.cpu1);
+      pila3.push(info.cpu2);
+      pila4.push(info.cpu3);
+  }else
+  {
+      var a=pila1.pop();
+      var b=info.cpu0;
+      io.sockets.emit('statinfo_change1', {'id':1,"usage":calculate_PerfomanceCPU(a,b)});
+      pila1.push(b);
+
+      a=pila2.pop();
+      b=info.cpu1;
+      io.sockets.emit('statinfo_change2', {'id':2,"usage":calculate_PerfomanceCPU(a,b)});
+      pila2.push(b);
+
+      a=pila3.pop();
+      b=info.cpu2;
+      io.sockets.emit('statinfo_change3', {'id':3,"usage":calculate_PerfomanceCPU(a,b)});
+      pila3.push(b);
+
+      a=pila4.pop();
+      b=info.cpu3;
+      io.sockets.emit('statinfo_change4', {'id':4,"usage":calculate_PerfomanceCPU(a,b)});
+      pila4.push(b);
+  }
   return info;
 }
 /* = ========================================================================= = */
+
+
+function calculate_PerfomanceCPU(a,b)
+{
+    var loadavg = ((b[0]+b[1]+b[2]+b[4]+b[5]+b[6]) - (a[0]+a[1]+a[2]+a[4]+a[5]+a[6])) /((b[0]+b[1]+b[2]+b[3]+b[4]+b[5]+b[6]) - (a[0]+a[1]+a[2]+a[3]+a[4]+a[5]+a[6]));
+    loadavg =  loadavg *100;
+    return loadavg;
+}
