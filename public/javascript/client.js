@@ -1,5 +1,10 @@
 var socket = io.connect('http://localhost:3000', { 'forceNew': true });
 
+var pila1=[];
+var pila2=[];
+var pila3=[];
+var pila4=[];
+
 socket.on('meminfo_change', function(data) {
     var memoryData= [ (data.MemTotal-data.MemFree)/1000000,data.MemFree/1000000];
     //console.log(data);
@@ -8,26 +13,34 @@ socket.on('meminfo_change', function(data) {
 });
 
 socket.on('statinfo_change', function(data) {
-    //average idle percentage X % = ( idle * 100 ) / ( user + nice + system + idle + iowait + irq + softirq )
-    var cpu = data.cpu;
-    var cpu1 = data.cpu0;
-    var cpu2 = data.cpu1;
-    var cpu3 = data.cpu2;
-    var cpu4 = data.cpu3;
+    if(pila1<1)
+    {
+        pila1.push(data.cpu0);
+        pila2.push(data.cpu1);
+        pila3.push(data.cpu2);
+        pila4.push(data.cpu3);
+    }else
+    {
+        var a=pila1.pop();
+        var b=data.cpu0;
+        plot_performanceCPU("1",a,b);
+        pila1.push(b);
 
-    //var percentage_cpu =( cpu.idle * 100 ) / ( cpu.user + cpu.nice + cpu.system + cpu.idle + cpu.iowait + cpu.irq + cpu.softirq );
-    //console.log('cpu:'+percentage_cpu);
+        a=pila2.pop();
+        b=data.cpu1;
+        plot_performanceCPU("2",a,b);
+        pila2.push(b);
 
-    var percentage_cpu1 =( cpu1.idle * 100 ) / ( cpu1.user + cpu1.nice + cpu1.system + cpu1.idle + cpu1.iowait + cpu1.irq + cpu1.softirq );
-    console.log('cpu1:'+(100-percentage_cpu1));
+        a=pila3.pop();
+        b=data.cpu2;
+        plot_performanceCPU("3",a,b);
+        pila3.push(b);
 
-    var percentage_cpu2 =( cpu2.idle * 100 ) / ( cpu2.user + cpu2.nice + cpu2.system + cpu2.idle + cpu2.iowait + cpu2.irq + cpu2.softirq );
-    console.log('cpu2:'+(100-percentage_cpu2));
-
-    var percentage_cpu3 =( cpu3.idle * 100 ) / ( cpu3.user + cpu3.nice + cpu3.system + cpu3.idle + cpu3.iowait + cpu3.irq + cpu3.softirq );
-    console.log('cpu3:'+(100-percentage_cpu3));
-
-    var percentage_cpu4 =( cpu4.idle * 100 ) / ( cpu4.user + cpu4.nice + cpu4.system + cpu4.idle + cpu4.iowait + cpu4.irq + cpu4.softirq );
-    console.log('cpu4:'+(100-percentage_cpu4));
-
+        a=pila4.pop();
+        b=data.cpu3;
+        plot_performanceCPU("4",a,b);
+        pila4.push(b);
+    }
+    
 });
+

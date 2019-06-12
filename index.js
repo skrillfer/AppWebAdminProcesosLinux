@@ -83,24 +83,24 @@ function Statinfo() {
       // Remove parseInt call to make all values strings
       if(line[0]=='cpu')
       {
-        info[line[0]] = {'user':parseInt(line[2].trim(), 10),
-                       'nice':parseInt(line[3].trim(), 10),
-                       'system':parseInt(line[4].trim(), 10),
-                       'idle':parseInt(line[5].trim(), 10),
-                       'iowait':parseInt(line[6].trim(), 10),
-                       'irq':parseInt(line[7].trim(), 10),
-                       'softirq':parseInt(line[8].trim(), 10)
-                      };
+        info[line[0]] = [parseInt(line[2].trim(), 10),
+                        parseInt(line[3].trim(), 10),
+                        parseInt(line[4].trim(), 10),
+                        parseInt(line[5].trim(), 10),
+                        parseInt(line[6].trim(), 10),
+                        parseInt(line[7].trim(), 10),
+                        parseInt(line[8].trim(), 10)
+                      ];
       }else
       {
-        info[line[0]] = {'user':parseInt(line[1].trim(), 10),
-                       'nice':parseInt(line[2].trim(), 10),
-                       'system':parseInt(line[3].trim(), 10),
-                       'idle':parseInt(line[4].trim(), 10),
-                       'iowait':parseInt(line[5].trim(), 10),
-                       'irq':parseInt(line[6].trim(), 10),
-                       'softirq':parseInt(line[7].trim(), 10)
-                      };
+        info[line[0]] = [parseInt(line[1].trim(), 10),
+                       parseInt(line[2].trim(), 10),
+                       parseInt(line[3].trim(), 10),
+                       parseInt(line[4].trim(), 10),
+                       parseInt(line[5].trim(), 10),
+                       parseInt(line[6].trim(), 10),
+                       parseInt(line[7].trim(), 10)
+                      ];
       }
       
   });
