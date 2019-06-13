@@ -74,6 +74,7 @@ fs.watchFile('/proc/stat', { recursive: true }, function(evt, name) {
 
 
 function Statinfo() {
+  var params = [];
   var info = {};
   var data = fs.readFileSync('/proc/stat').toString();
   data.split(/\n/g).forEach(function(line){
@@ -118,23 +119,29 @@ function Statinfo() {
   {
       var a=pila1.pop();
       var b=info.cpu0;
-      io.sockets.emit('statinfo_change1', {'id':1,"usage":calculate_PerfomanceCPU(a,b)});
+      params.push({'id':1,"usage":calculate_PerfomanceCPU(a,b)});
+
+      //io.sockets.emit('statinfo_change1', );
       pila1.push(b);
 
       a=pila2.pop();
       b=info.cpu1;
-      io.sockets.emit('statinfo_change2', {'id':2,"usage":calculate_PerfomanceCPU(a,b)});
+      params.push({'id':2,"usage":calculate_PerfomanceCPU(a,b)});
+      //io.sockets.emit('statinfo_change2', {'id':2,"usage":calculate_PerfomanceCPU(a,b)});
       pila2.push(b);
 
       a=pila3.pop();
       b=info.cpu2;
-      io.sockets.emit('statinfo_change3', {'id':3,"usage":calculate_PerfomanceCPU(a,b)});
+      params.push({'id':3,"usage":calculate_PerfomanceCPU(a,b)});
+      //io.sockets.emit('statinfo_change3', {'id':3,"usage":calculate_PerfomanceCPU(a,b)});
       pila3.push(b);
 
       a=pila4.pop();
       b=info.cpu3;
-      io.sockets.emit('statinfo_change4', {'id':4,"usage":calculate_PerfomanceCPU(a,b)});
+      params.push({'id':4,"usage":calculate_PerfomanceCPU(a,b)});
+      //io.sockets.emit('statinfo_change4', {'id':4,"usage":calculate_PerfomanceCPU(a,b)});
       pila4.push(b);
+      io.sockets.emit('statinfo_change', params);
   }
   return info;
 }

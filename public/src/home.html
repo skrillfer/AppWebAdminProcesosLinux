@@ -8,14 +8,6 @@
         <script src="/src/JS/popper.min.js" ></script>
         <link rel="stylesheet" href="/src/CSS/bootstrap.min.css" >
         <script src="/src/JS/bootstrap.min.js" ></script>
-        <!--
-            Chart.js
-                
-        -->
-        <script src="/src/JS/Chart.bundle.js"></script>
-        <script src="/src/JS/Chart.bundle.min.js"></script>
-        <script src="/src/JS/Chart.js"></script>
-        <script src="/src/JS/Chart.js"></script>
         
         
         <script src="/socket.io/socket.io.js"></script>
@@ -43,16 +35,13 @@
         </ul>
         
         <!-- Tab panes -->
-        <div class="tab-content">
+        <div class="tab-content" id="_TAB_CONTENT_">
             <div class="tab-pane container fade" id="home">...</div>
-            <div class="tab-pane container active" id="monitorCPU">
+            <div class="tab-pane container active" name= "monitorCPU" id="monitorCPU">
+                    <hr/>
                     <div  class="row">
-                        <div class="card" style="width: 18rem;">
-                                <canvas id="CPU_PerformanceChart" width="auto" height="auto"></canvas>
-                                <div class="card-body">
-                                    <p class="card-text">CPU Performance</p>
-                                </div>
-                        </div>
+                        <div id="chartCPU1Container" style="height: 250px; width: 90%;"></div>
+                        
                     </div>
                     <div class="row">
                         <div class="col-sm">
@@ -78,14 +67,11 @@
                     </div>
                     
             </div>
-            <div class="tab-pane container fade" id="monitorRAM">
+            <div class="tab-pane container fade" name="monitorRAM" id="monitorRAM">
                 <!--Pie Usage RAM-->
                 <hr/>
                 <div class="row">
-                        <div id="chartRAMContainer" style="height: 200px; width: 100%;"></div>
-                        <!--
-                            <canvas id="pie_chartRAM" width="150" height="150"></canvas>    
-                        -->
+                        <div id="chartRAMContainer" style="height: 250px; width: 90%;"></div>
                 </div>
                 <div class="row">
                     <div class="col-sm">
