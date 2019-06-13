@@ -1,3 +1,5 @@
+const path  = require('path')
+
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
@@ -26,11 +28,18 @@ io.on('connection', function(socket) {
   //console.log('Alguien se ha conectado con Sockets');
   //socket.emit('messages', messages);
 
-  /*socket.on('new-message', function(data) {
-    messages.push(data);
+  socket.on('getAllProcess', function(data) {
+    var arr_Path = getAllProcess("/proc");
+    var arr_ProcessSend = [];
+    arr_Path.forEach(
+      item=>{
+        arr_ProcessSend.push(getInfoSingleProcess(item));
+      }
+    );
+    
 
-    io.sockets.emit('messages', messages);
-  });*/
+    io.sockets.emit('ReceivingProcess', {'process':arr_ProcessSend});
+  });
 });
 
 /* = ==============================MEM INFO======================================= = */
@@ -120,26 +129,21 @@ function Statinfo() {
       var a=pila1.pop();
       var b=info.cpu0;
       params.push({'id':1,"usage":calculate_PerfomanceCPU(a,b)});
-
-      //io.sockets.emit('statinfo_change1', );
       pila1.push(b);
 
       a=pila2.pop();
       b=info.cpu1;
       params.push({'id':2,"usage":calculate_PerfomanceCPU(a,b)});
-      //io.sockets.emit('statinfo_change2', {'id':2,"usage":calculate_PerfomanceCPU(a,b)});
       pila2.push(b);
 
       a=pila3.pop();
       b=info.cpu2;
       params.push({'id':3,"usage":calculate_PerfomanceCPU(a,b)});
-      //io.sockets.emit('statinfo_change3', {'id':3,"usage":calculate_PerfomanceCPU(a,b)});
       pila3.push(b);
 
       a=pila4.pop();
       b=info.cpu3;
       params.push({'id':4,"usage":calculate_PerfomanceCPU(a,b)});
-      //io.sockets.emit('statinfo_change4', {'id':4,"usage":calculate_PerfomanceCPU(a,b)});
       pila4.push(b);
       io.sockets.emit('statinfo_change', params);
   }
@@ -153,4 +157,40 @@ function calculate_PerfomanceCPU(a,b)
     var loadavg = ((b[0]+b[1]+b[2]+b[4]+b[5]+b[6]) - (a[0]+a[1]+a[2]+a[4]+a[5]+a[6])) /((b[0]+b[1]+b[2]+b[3]+b[4]+b[5]+b[6]) - (a[0]+a[1]+a[2]+a[3]+a[4]+a[5]+a[6]));
     loadavg =  loadavg *100;
     return loadavg;
+}
+
+
+function getInfoSingleProcess(path)
+{ 
+  var ProcessInfo_Return = {};
+  var info={};
+  var data = fs.readFileSync(path+'/status').toString();
+  data.split(/\n/g).forEach(function(line){
+    line = line.split(':');
+
+    // Ignore invalid lines, if any
+    if (line.length < 2) {
+        return;
+    }
+
+    // Remove parseInt call to make all values strings
+    info[line[0]] = line[1].trim();
+  });
+
+  ProcessInfo_Return['Name'] = info.Name;
+  ProcessInfo_Return['State'] = info.State;
+  ProcessInfo_Return['Pid'] = info.Pid;
+  return ProcessInfo_Return;
+  //console.log(info.Name);
+  //console.log(info.State);
+  //console.log(info.Pid);
+}
+function getAllProcess(srcpath)
+{ 
+  const regex = new RegExp('/[0-9]+', 'g');
+
+  return fs.readdirSync(srcpath)
+  .map(file => path.join(srcpath, file))
+  .filter(path => fs.statSync(path).isDirectory())
+  .filter((ruta) => {return ruta.match(regex)});  
 }

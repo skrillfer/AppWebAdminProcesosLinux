@@ -14,15 +14,6 @@ socket.on('statinfo_change', function(data) {
     setInterval(function(){plot_performanceCPU(data)}, 3000);
 });
 
-socket.on('statinfo_change2', function(data) {
-    //plot_performanceCPU(data.id,data.usage);
+socket.on('ReceivingProcess', function(data) {
+    paintInfoProcess(data.process);
 });
-
-socket.on('statinfo_change3', function(data) {
-    //plot_performanceCPU(data.id,data.usage);
-});
-
-socket.on('statinfo_change4', function(data) {
-    //plot_performanceCPU(data.id,data.usage);
-});
-

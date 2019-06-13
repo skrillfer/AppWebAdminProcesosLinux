@@ -164,3 +164,30 @@ function plot_performanceCPU(data)
     document.getElementById("cpu"+data[2].id+"_info").textContent= data[2].usage.toFixed(2) + '%';
     document.getElementById("cpu"+data[3].id+"_info").textContent= data[3].usage.toFixed(2) + '%';
 }
+
+function loadProcess()
+{
+    socket.emit('getAllProcess', {});
+}
+
+function paintInfoProcess(data)
+{
+    var html = '';
+    data.forEach(
+        item =>{
+            html+='<tr>'+
+                    '<td>'+item.Pid+'</td>'+
+                    '<td>'+item.Name+'</td>'+
+                    '<td>'+item.State+'</td>'+
+                '</tr>';
+        }
+    );
+    document.getElementById("bodyListProcess").innerHTML+=html;
+    try {
+        $(document).ready( function () {
+            $('#tableProcess').DataTable();
+        } );   
+    } catch (error) {
+        
+    }
+}

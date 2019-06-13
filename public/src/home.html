@@ -1,5 +1,6 @@
 <html>
     <head>
+       
         <!--Dynamic Chart-->
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
@@ -9,7 +10,13 @@
         <link rel="stylesheet" href="/src/CSS/bootstrap.min.css" >
         <script src="/src/JS/bootstrap.min.js" ></script>
         
-        
+         <!--
+            DataTables
+        -->
+
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+
         <script src="/socket.io/socket.io.js"></script>
         <script src ="/javascript/client.js"></script>
         <script src ="/javascript/plot_cpu.js"></script>
@@ -17,17 +24,17 @@
             Home
         </title>
     </head>
-    <body>
+    <body onload="loadProcess()">
         <div class="container">
         <center><strong><h2>Administrador de Recursos del CPU</h2></strong></center>
         
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
             <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#home">Lista Procesos</a>
+            <a class="nav-link active" data-toggle="tab" href="#home">Lista Procesos</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#monitorCPU">Monitor CPU</a>
+            <a class="nav-link " data-toggle="tab" href="#monitorCPU">Monitor CPU</a>
             </li>
             <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#monitorRAM">Monitor RAM</a>
@@ -36,8 +43,22 @@
         
         <!-- Tab panes -->
         <div class="tab-content" id="_TAB_CONTENT_">
-            <div class="tab-pane container fade" id="home">...</div>
-            <div class="tab-pane container active" name= "monitorCPU" id="monitorCPU">
+            <div class="tab-pane container active" id="home">
+                    <hr/>
+                    <table class="table" id="tableProcess">
+                            <thead class="thead-dark">
+                              <tr>
+                                <th>Pid</th>
+                                <th>Nombre</th>
+                                <th>Status</th>
+                              </tr>
+                            </thead>
+                            <tbody id="bodyListProcess">
+
+                            </tbody>
+                    </table>        
+            </div>
+            <div class="tab-pane container fade" name= "monitorCPU" id="monitorCPU">
                     <hr/>
                     <div  class="row">
                         <div id="chartCPU1Container" style="height: 250px; width: 90%;"></div>
