@@ -1,5 +1,8 @@
 <html>
     <head>
+        <!--Dynamic Chart-->
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
         <!-- Boostrap    -->
         <script src="/src/JS/jquery-3.3.1.slim.min.js" ></script>
         <script src="/src/JS/popper.min.js" ></script>
@@ -79,8 +82,10 @@
                 <!--Pie Usage RAM-->
                 <hr/>
                 <div class="row">
-                        <canvas id="pie_chartRAM" width="150" height="150"></canvas>
-                
+                        <div id="chartRAMContainer" style="height: 200px; width: 100%;"></div>
+                        <!--
+                            <canvas id="pie_chartRAM" width="150" height="150"></canvas>    
+                        -->
                 </div>
                 <div class="row">
                     <div class="col-sm">
