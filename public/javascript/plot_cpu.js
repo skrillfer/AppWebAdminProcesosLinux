@@ -1,3 +1,6 @@
+var OCUPADO = 0;
+var TABLE =null;
+var HTML_TABLE = '';
 var AllProcess = [];
 var dpsCPU = {'cpu1':[],'cpu2':[],'cpu3':[],'cpu4':[]};
 var contCPU = 0;
@@ -101,8 +104,12 @@ function PlotRAM_Graph(dataX,MemTotal,MemFree)
     var Libre = (MemFree/1000).toFixed(2);
     var Ocupado = (MemTotal/1000-MemFree/1000).toFixed(2);
 
-
-    UpdateAllProcess(Ocupado);
+    OCUPADO = Ocupado;
+    var element=document.querySelector('#_TAB_CONTENT_ > div.active');
+    if(element.id=="home")
+    {
+        UpdateAllProcess(Ocupado);
+    }
     document.getElementById("SizeFree_RAM").textContent = Libre;
     document.getElementById("SizeOcupado_RAM").textContent =  Ocupado;
     document.getElementById("percentageUsage_RAM").textContent =  ((Ocupado*100)/(MemTotal/1000) ).toFixed(2) +"%";
@@ -115,16 +122,50 @@ function PlotRAM_Graph(dataX,MemTotal,MemFree)
 
 function UpdateAllProcess(Ocupado)
 {
-    console.log(Ocupado);
     AllProcess.forEach(
         item=>{
-            var tdx= document.getElementById("process_"+item.Pid);
-            if(tdx!=null)
+
+            if(TABLE.rows('[id='+item.Pid+']').any())
             {
-                tdx.textContent =( (((item.VmRSS/1000)/Ocupado)*100).toFixed(2)  )/ 2 ;
+                var ROW_SELECTED =TABLE.row(item.Pid);
+                
+                try {
+                    var datax=[
+                        item.Pid,
+                        item.Name,
+                        item.State,
+                        processPercentageRAM(item.VmRSS),                    
+                        function ( data, type, row ) {
+                              return '<button type="button" onClick="killProcess(this.id)" id="'+item.Pid+'" class="btn btn-danger">Eliminar</button>';
+                        }     
+                    ];
+
+                    ROW_SELECTED.data(datax).draw();
+                    
+                } catch (error) {
+
+                    TABLE
+                    .row( ROW_SELECTED )
+                    .remove()
+                    .draw();
+
+                    var newRow = TABLE.row.add(
+                        [
+                            item.Pid,
+                            item.Name,
+                            item.State,
+                            processPercentageRAM(item.VmRSS),                    
+                            function ( data, type, row ) {
+                                  return '<button type="button" onClick="killProcess(this.id)" id="'+item.Pid+'" class="btn btn-danger">Eliminar</button>';
+                            }
+                              
+                        ]
+                    ).draw();
+                    newRow.nodes().to$().attr('id',item.Pid);   
+                }
+                
+
             }
-            //console.log(tdx);
-            //
         }
     );
     //
@@ -183,6 +224,7 @@ function UpdateChart(Ocupado,Libre)
 
 function plot_performanceCPU(data)
 {
+    
     PlotCPU_Graph(data);
     
     document.getElementById("cpu"+data[0].id+"_info").textContent= data[0].usage.toFixed(2) + '%';
@@ -193,33 +235,69 @@ function plot_performanceCPU(data)
 
 function loadProcess()
 {
+    if(TABLE==null)
+    {
+        
+        $(document).ready( function () {
+            var jsonArray = {"Columns":[{"name":"ID","field":"id"},{"name":"Nombre","field":"nombre"},{"name":"Estado","field":"estado"},{"name":"RAM %","field":"ram"},{"name":"Kill","field":"kill"}]};
+            var columnArray = jsonArray['Columns'];
+            var titleArray = [];
+            for (var j = 0; j < columnArray.length; j++) {
+                var temp = {};
+                temp['title'] = columnArray[j]["name"];
+                titleArray.push(temp);
+            };
+
+            TABLE = $('#tableProcess').DataTable({ "columns": titleArray});
+            
+        } ); 
+        
+    }
     socket.emit('getAllProcess', {});
 }
+
 
 function paintInfoProcess(data)
 {   
     AllProcess = data;
-    var html = '';
     data.forEach(
         item =>{
-            html+='<tr>'+
-                    '<td>'+item.Pid+'</td>'+
-                    '<td>'+item.Name+'</td>'+
-                    '<td>'+item.State+'</td>'+
-                    '<td id="process_'+item.Pid+'"></td>'+
-                '</tr>';
+            
+            if(!TABLE.rows('[id='+item.Pid+']').any()) 
+            {
+                try {
+                    var newRow = TABLE.row.add(
+                        [
+                            item.Pid,
+                            item.Name,
+                            item.State,
+                            processPercentageRAM(item.VmRSS),                    
+                            function ( data, type, row ) {
+                                  return '<button type="button" onClick="killProcess(this.id)" id="'+item.Pid+'" class="btn btn-danger">Eliminar</button>';
+                            }
+                              
+                        ]
+                    ).draw();
+                    newRow.nodes().to$().attr('id',item.Pid);   
+                     
+                } catch (error) {
+                }    
+            }
         }
     );
-    document.getElementById("bodyListProcess").innerHTML+=html;
-    try {
-        $(document).ready( function () {
-            $('#tableProcess').DataTable();
-        } );   
-    } catch (error) {
-        
-    }
 }
 
+
+function processPercentageRAM(VmRSS){
+    if(OCUPADO==0)
+    {
+        return 0;
+    }else
+    {
+        return ((((VmRSS/1000)/OCUPADO)*100).toFixed(2))/2;
+    }
+    
+}
 function paintInfoSummary(data)
 {
     document.getElementById("outTotalProcess").textContent=data.total;
@@ -228,4 +306,28 @@ function paintInfoSummary(data)
     document.getElementById("outStopProcess").textContent=data.stopped;
     document.getElementById("outZombieProcess").textContent=data.zombie;
     
+}
+
+function killProcess(id)
+{
+    try {
+        
+        eliminarRow(id);
+        TABLE.row(id).remove().draw();
+        TABLE.draw();
+
+        socket.emit('killingProcess',{'id':parseInt(id,10) });
+
+        
+
+    } catch (error) {
+        
+    }
+}
+
+
+function eliminarRow(id)
+{
+    var body = document.getElementById("bodyListProcess");
+    body.removeChild(document.getElementById(id))
 }

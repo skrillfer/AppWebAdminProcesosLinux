@@ -1,3 +1,5 @@
+const exec = require('child_process').exec;
+
 var Procesos_R = 0;
 var Procesos_Z = 0;
 var Procesos_S = 0;
@@ -43,6 +45,10 @@ io.on('connection', function(socket) {
       }
     );
     io.sockets.emit('ReceivingProcess', {'process':arr_ProcessSend});
+  });
+
+  socket.on('killingProcess', function(data) {
+    killProcess(data.id);
   });
 });
 
@@ -160,7 +166,9 @@ function Statinfo() {
           );
           infoGeneral['sleep'] = Procesos_S + Procesos_D;
           infoGeneral['zombie'] = Procesos_Z;
-          infoGeneral['stopped'] = Procesos_T;
+          infoGeneral['stopped'] = infoGeneral['total'] - infoGeneral['running']; 
+
+          io.sockets.emit('ReceivingProcess', {'process':arr_ProcessSend});
           io.sockets.emit('summary', infoGeneral);
         }
       }
@@ -240,12 +248,7 @@ function getInfoSingleProcess(path)
     }
     
   }
-  
-
   return ProcessInfo_Return;
-  //console.log(info.Name);
-  //console.log(info.State);
-  //console.log(info.Pid);
 }
 
 function getAllProcess(srcpath)
@@ -256,4 +259,20 @@ function getAllProcess(srcpath)
   .map(file => path.join(srcpath, file))
   .filter(path => fs.statSync(path).isDirectory())
   .filter((ruta) => {return ruta.match(regex)});  
+}
+
+function killProcess(id)
+{
+  try {
+    const child = exec('kill -9 '+id,
+            (error, stdout, stderr) => {
+                console.log(`stdout: ${stdout}`);
+                console.log(`stderr: ${stderr}`);
+                if (error !== null) {
+                    console.log(`exec error: ${error}`);
+                }
+      });
+  } catch (error) {
+    console.log('error kill process:'+error); 
+  }
 }
