@@ -1,3 +1,4 @@
+var AllProcess = [];
 var dpsCPU = {'cpu1':[],'cpu2':[],'cpu3':[],'cpu4':[]};
 var contCPU = 0;
 var ChartPerformance_CPU = null;
@@ -96,13 +97,38 @@ function PlotCPU_Graph(data)
 
 function PlotRAM_Graph(dataX,MemTotal,MemFree)
 {
+
     var Libre = (MemFree/1000).toFixed(2);
     var Ocupado = (MemTotal/1000-MemFree/1000).toFixed(2);
+
+
+    UpdateAllProcess(Ocupado);
     document.getElementById("SizeFree_RAM").textContent = Libre;
     document.getElementById("SizeOcupado_RAM").textContent =  Ocupado;
     document.getElementById("percentageUsage_RAM").textContent =  ((Ocupado*100)/(MemTotal/1000) ).toFixed(2) +"%";
     UpdateChart(Ocupado,Libre);
+    /*setInterval(function(){
+        
+    }, 1500);*/
+    
 }   
+
+function UpdateAllProcess(Ocupado)
+{
+    console.log(Ocupado);
+    AllProcess.forEach(
+        item=>{
+            var tdx= document.getElementById("process_"+item.Pid);
+            if(tdx!=null)
+            {
+                tdx.textContent =( (((item.VmRSS/1000)/Ocupado)*100).toFixed(2)  )/ 2 ;
+            }
+            //console.log(tdx);
+            //
+        }
+    );
+    //
+}
 
 function UpdateChart(Ocupado,Libre)
 {
@@ -171,7 +197,8 @@ function loadProcess()
 }
 
 function paintInfoProcess(data)
-{
+{   
+    AllProcess = data;
     var html = '';
     data.forEach(
         item =>{
@@ -179,6 +206,7 @@ function paintInfoProcess(data)
                     '<td>'+item.Pid+'</td>'+
                     '<td>'+item.Name+'</td>'+
                     '<td>'+item.State+'</td>'+
+                    '<td id="process_'+item.Pid+'"></td>'+
                 '</tr>';
         }
     );
@@ -190,4 +218,14 @@ function paintInfoProcess(data)
     } catch (error) {
         
     }
+}
+
+function paintInfoSummary(data)
+{
+    document.getElementById("outTotalProcess").textContent=data.total;
+    document.getElementById("outRunProcess").textContent=data.running;
+    document.getElementById("outSuspendProcess").textContent=data.sleep;
+    document.getElementById("outStopProcess").textContent=data.stopped;
+    document.getElementById("outZombieProcess").textContent=data.zombie;
+    
 }

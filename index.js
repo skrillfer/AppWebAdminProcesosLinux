@@ -1,3 +1,9 @@
+var Procesos_R = 0;
+var Procesos_Z = 0;
+var Procesos_S = 0;
+var Procesos_T = 0;
+var Procesos_D = 0;
+
 const path  = require('path')
 
 var express = require('express');
@@ -36,8 +42,6 @@ io.on('connection', function(socket) {
         arr_ProcessSend.push(getInfoSingleProcess(item));
       }
     );
-    
-
     io.sockets.emit('ReceivingProcess', {'process':arr_ProcessSend});
   });
 });
@@ -85,36 +89,82 @@ fs.watchFile('/proc/stat', { recursive: true }, function(evt, name) {
 function Statinfo() {
   var params = [];
   var info = {};
+  
+  var infoGeneral = {};
   var data = fs.readFileSync('/proc/stat').toString();
   data.split(/\n/g).forEach(function(line){
       line = line.split(' ');
 
       // Ignore invalid lines, if any
-      if (!line[0].includes('cpu')) {
+      if (!line[0].includes('cpu') && !line[0].includes('proc')) {
           return;
       }
-      //console.log(line);
-      if(line[0]=='cpu')
-      {
-        info[line[0]] = [parseInt(line[2].trim(), 10),
+      
+      if(line[0].includes('cpu')){
+        if(line[0]=='cpu'){
+          info[line[0]] = [parseInt(line[2].trim(), 10),
+                          parseInt(line[3].trim(), 10),
+                          parseInt(line[4].trim(), 10),
+                          parseInt(line[5].trim(), 10),
+                          parseInt(line[6].trim(), 10),
+                          parseInt(line[7].trim(), 10),
+                          parseInt(line[8].trim(), 10)
+                        ];
+        }else{
+          info[line[0]] = [parseInt(line[1].trim(), 10),
+                        parseInt(line[2].trim(), 10),
                         parseInt(line[3].trim(), 10),
                         parseInt(line[4].trim(), 10),
                         parseInt(line[5].trim(), 10),
                         parseInt(line[6].trim(), 10),
-                        parseInt(line[7].trim(), 10),
-                        parseInt(line[8].trim(), 10)
-                      ];
-      }else
-      {
-        info[line[0]] = [parseInt(line[1].trim(), 10),
-                       parseInt(line[2].trim(), 10),
-                       parseInt(line[3].trim(), 10),
-                       parseInt(line[4].trim(), 10),
-                       parseInt(line[5].trim(), 10),
-                       parseInt(line[6].trim(), 10),
-                       parseInt(line[7].trim(), 10)
-                      ];
+                        parseInt(line[7].trim(), 10)
+                        ];
+        }
+      }else{
+        if(line[0]=='processes')
+        {
+          infoGeneral['total'] = parseInt(line[1].trim(), 10);
+        }else if(line[0]=='procs_running')
+        {
+          infoGeneral['running'] = parseInt(line[1].trim(), 10);
+        }else if(line[0]=='procs_blocked')
+        {
+          //https://idea.popcount.org/2012-12-11-linux-process-states/
+          Procesos_R = 0;
+          Procesos_Z = 0;
+          Procesos_S = 0;
+          Procesos_T = 0;
+          Procesos_D = 0;
+          var arr_ProcessSend = [];
+          var allProcess =getAllProcess("/proc");
+          allProcess.forEach(
+            item=>{
+              var stat=getInfoSingleProcess(item);
+              arr_ProcessSend.push(stat);
+              if (stat.State.includes('R')){
+                Procesos_R++
+              }
+              if (stat.State.includes('Z')){
+                Procesos_Z++
+              }
+              if (stat.State.includes('S')){
+                Procesos_S++
+              }
+              if (stat.State.includes('T')){
+                Procesos_T++
+              }
+              if (stat.State.includes('D')){
+                Procesos_D++
+              }
+            }
+          );
+          infoGeneral['sleep'] = Procesos_S + Procesos_D;
+          infoGeneral['zombie'] = Procesos_Z;
+          infoGeneral['stopped'] = Procesos_T;
+          io.sockets.emit('summary', infoGeneral);
+        }
       }
+      
       
   });
 
@@ -180,11 +230,24 @@ function getInfoSingleProcess(path)
   ProcessInfo_Return['Name'] = info.Name;
   ProcessInfo_Return['State'] = info.State;
   ProcessInfo_Return['Pid'] = info.Pid;
+  ProcessInfo_Return['VmRSS'] = 0;
+  if(info.VmRSS)
+  {
+    try {
+      ProcessInfo_Return['VmRSS'] = parseFloat(info.VmRSS.replace(/kB/g, '').trim());  
+    } catch (error) {
+      console.log('error al castear VmRSS:'+error);
+    }
+    
+  }
+  
+
   return ProcessInfo_Return;
   //console.log(info.Name);
   //console.log(info.State);
   //console.log(info.Pid);
 }
+
 function getAllProcess(srcpath)
 { 
   const regex = new RegExp('/[0-9]+', 'g');

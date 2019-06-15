@@ -45,12 +45,57 @@
         <div class="tab-content" id="_TAB_CONTENT_">
             <div class="tab-pane container active" id="home">
                     <hr/>
+                    <h3>Informacion General del Sistema</h3>
+                    <div class="row">
+                        <div class="col-sm">
+                            <label id="TotalProcess"><strong>Numero Total de Procesos:</strong></label>
+                        </div>
+                        <div class="col-sm">
+                            <label id="outTotalProcess"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <label id="RunProcess"><strong>Procesos en Ejecucion</strong></label>
+                        </div>
+                        <div class="col-sm">
+                            <label id="outRunProcess"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <label id="SuspendProcess"><strong>Procesos Suspendidos</strong></label>
+                        </div>    
+                        <div class="col-sm">
+                            <label id="outSuspendProcess"></label>
+                        </div>    
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <label id="StopProcess"><strong>Procesos Detenidos</strong> </label>
+                        </div>
+                        <div class="col-sm">
+                            <label id="outStopProcess"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <label id="ZombieProcess"><strong>Procesos Zombie</strong> </label>
+                        </div>
+                        <div class="col-sm">
+                            <label id="outZombieProcess"></label>
+                        </div>
+                    </div>
+                    
+                    <hr/>
+                    <h3>Todos Los Procesos</h3>
                     <table class="table" id="tableProcess">
                             <thead class="thead-dark">
                               <tr>
                                 <th>Pid</th>
                                 <th>Nombre</th>
                                 <th>Status</th>
+                                <th>RAM %</th>
                               </tr>
                             </thead>
                             <tbody id="bodyListProcess">
