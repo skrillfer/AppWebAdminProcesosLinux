@@ -133,6 +133,7 @@ function UpdateAllProcess(Ocupado)
                     var datax=[
                         item.Pid,
                         item.Name,
+                        item.Uid,
                         item.State,
                         processPercentageRAM(item.VmRSS),                    
                         function ( data, type, row ) {
@@ -153,6 +154,7 @@ function UpdateAllProcess(Ocupado)
                         [
                             item.Pid,
                             item.Name,
+                            item.Uid,
                             item.State,
                             processPercentageRAM(item.VmRSS),                    
                             function ( data, type, row ) {
@@ -236,12 +238,12 @@ function plot_performanceCPU(data)
 function loadProcess()
 {
     socket.emit('getLogin', {});
-    
+
     if(TABLE==null)
     {
         
         $(document).ready( function () {
-            var jsonArray = {"Columns":[{"name":"ID","field":"id"},{"name":"Nombre","field":"nombre"},{"name":"Estado","field":"estado"},{"name":"RAM %","field":"ram"},{"name":"Kill","field":"kill"}]};
+            var jsonArray = {"Columns":[{"name":"ID","field":"id"},{"name":"Nombre","field":"nombre"},{"name":"Usuario","field":"usuario"},{"name":"Estado","field":"estado"},{"name":"RAM %","field":"ram"},{"name":"Kill","field":"kill"}]};
             var columnArray = jsonArray['Columns'];
             var titleArray = [];
             for (var j = 0; j < columnArray.length; j++) {
@@ -272,6 +274,7 @@ function paintInfoProcess(data)
                         [
                             item.Pid,
                             item.Name,
+                            item.Uid,
                             item.State,
                             processPercentageRAM(item.VmRSS),                    
                             function ( data, type, row ) {

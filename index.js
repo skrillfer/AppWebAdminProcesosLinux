@@ -257,6 +257,14 @@ function getInfoSingleProcess(path)
   ProcessInfo_Return['State'] = info.State;
   ProcessInfo_Return['Pid'] = info.Pid;
   ProcessInfo_Return['VmRSS'] = 0;
+
+  try {
+    ProcessInfo_Return['Uid']=getUsername(info.Uid);  
+  } catch (error) {
+    ProcessInfo_Return['Uid']='';
+  }
+  
+  //ProcessInfo_Return['Uid'] = info.Uid;
   if(info.VmRSS)
   {
     try {
@@ -293,4 +301,28 @@ function killProcess(id)
   } catch (error) {
     console.log('error kill process:'+error); 
   }
+}
+
+
+function getUsername(Uid)
+{
+  
+  var usuarios = GetUsers();
+  return usuarios[Uid.split('\t')[0]];
+
+}
+
+function GetUsers()
+{
+    var valores={};
+    var bnf = fs.readFileSync("/etc/passwd", "utf8");
+    var lineas = bnf.split("\n");
+
+    for(var x=0;x<lineas.length;x++)
+    {
+        var aux=lineas[x];
+        var ar=aux.split(":"); 
+        valores[ar[2]]=ar[0];
+    }
+    return valores;
 }
