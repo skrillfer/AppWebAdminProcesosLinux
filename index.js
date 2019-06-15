@@ -1,3 +1,4 @@
+var login=false;
 const exec = require('child_process').exec;
 
 var Procesos_R = 0;
@@ -25,6 +26,10 @@ require('log-timestamp');
 app.use(express.static('public'));
 
 app.get('/', function (req, res) {
+  res.sendFile(__dirname+'/public/src/login.html');
+});
+
+app.get('/home', function (req, res) {
   res.sendFile(__dirname+'/public/src/home.html');
 });
 
@@ -50,6 +55,19 @@ io.on('connection', function(socket) {
   socket.on('killingProcess', function(data) {
     killProcess(data.id);
   });
+
+  socket.on('saveLogin', function(data) {
+    login=true;
+  });
+
+  socket.on('quitLogin', function(data) {
+    login=false;
+  });
+
+  socket.on('getLogin', function(data) {
+    io.sockets.emit('ReceivingLogin', {'login':login});
+  });
+
 });
 
 /* = ==============================MEM INFO======================================= = */

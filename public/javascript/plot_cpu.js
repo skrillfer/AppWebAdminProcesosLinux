@@ -235,6 +235,8 @@ function plot_performanceCPU(data)
 
 function loadProcess()
 {
+    socket.emit('getLogin', {});
+    
     if(TABLE==null)
     {
         
@@ -330,4 +332,23 @@ function eliminarRow(id)
 {
     var body = document.getElementById("bodyListProcess");
     body.removeChild(document.getElementById(id))
+}
+
+
+function login()
+{
+    if(document.getElementById("input1").value && document.getElementById("input2").value)
+    {
+        socket.emit('saveLogin', {});       
+        window.location.replace("http://localhost:3000/home");
+        
+    }
+}
+
+
+function quitLogin()
+{
+    
+    socket.emit('quitLogin', {});
+    window.location.replace("http://localhost:3000");
 }
