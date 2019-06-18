@@ -126,7 +126,8 @@ function UpdateAllProcess(Ocupado)
         } catch (error) {
         }
         
-    });    
+    });  
+    search_inTable();  
 }
 
 function UpdateChart(Ocupado,Libre)
@@ -216,6 +217,7 @@ function paintInfoProcess(data)
                 document.getElementById("bodyListProcess").innerHTML+=html;
             }
     );
+    search_inTable();
 }
 
 
@@ -269,4 +271,33 @@ function quitLogin()
     
     socket.emit('quitLogin', {});
     window.location.replace("http://localhost:3000");
+}
+
+
+function search_inTable()
+{
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("_search_input");
+    filter = input.value.toUpperCase();
+    
+    table = document.getElementById("tableProcess");
+    tr = table.getElementsByTagName("tr");
+  
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      } 
+    }
+}
+
+function force_Search()
+{
+    
 }

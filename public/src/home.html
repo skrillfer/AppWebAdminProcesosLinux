@@ -45,8 +45,8 @@
         <div class="tab-content" id="_TAB_CONTENT_">
             <div class="tab-pane container active" id="home">
                     <hr/>
-                    <h3>Informacion General del Sistema</h3>
-                    <div class="row">
+                    <h3 >Informacion General del Sistema</h3>
+                    <div class="row" style="background-color:greenyellow">
                         <div class="col-sm">
                             <label id="TotalProcess"><strong>Numero Total de Procesos:</strong></label>
                         </div>
@@ -54,7 +54,7 @@
                             <label id="outTotalProcess"></label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="background-color:greenyellow">
                         <div class="col-sm">
                             <label id="RunProcess"><strong>Procesos en Ejecucion</strong></label>
                         </div>
@@ -62,7 +62,7 @@
                             <label id="outRunProcess"></label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="background-color:greenyellow">
                         <div class="col-sm">
                             <label id="SuspendProcess"><strong>Procesos Suspendidos</strong></label>
                         </div>    
@@ -70,7 +70,7 @@
                             <label id="outSuspendProcess"></label>
                         </div>    
                     </div>
-                    <div class="row">
+                    <div class="row" style="background-color:greenyellow">
                         <div class="col-sm">
                             <label id="StopProcess"><strong>Procesos Detenidos</strong> </label>
                         </div>
@@ -78,7 +78,7 @@
                             <label id="outStopProcess"></label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="background-color:greenyellow">
                         <div class="col-sm">
                             <label id="ZombieProcess"><strong>Procesos Zombie</strong> </label>
                         </div>
@@ -90,10 +90,10 @@
                     <hr/>
                     <h3>Todos Los Procesos</h3>
                     <div class="input-group col-md-4">
-                            <input class="form-control py-2 border-right-0 border" type="search" value="search" id="example-search-input">
-                            <span class="glyphicon glyphicon-search">
-                            </span>
+                            <input  onkeyup="search_inTable()"  type="search" value="" id="_search_input" placeholder="buscar proceso">
+                            
                     </div>
+                <hr/>
                     <table class="table" id="tableProcess">
                             
                             <thead class="thead-dark">
