@@ -255,7 +255,7 @@ function getInfoSingleProcess(path)
 
   ProcessInfo_Return['Name'] = info.Name;
   ProcessInfo_Return['State'] = info.State;
-  ProcessInfo_Return['Pid'] = info.Pid;
+  ProcessInfo_Return['Pid'] = info.Pid.trim();
   ProcessInfo_Return['VmRSS'] = 0;
 
   try {

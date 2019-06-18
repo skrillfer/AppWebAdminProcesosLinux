@@ -113,64 +113,20 @@ function PlotRAM_Graph(dataX,MemTotal,MemFree)
     document.getElementById("SizeFree_RAM").textContent = Libre;
     document.getElementById("SizeOcupado_RAM").textContent =  Ocupado;
     document.getElementById("percentageUsage_RAM").textContent =  ((Ocupado*100)/(MemTotal/1000) ).toFixed(2) +"%";
-    UpdateChart(Ocupado,Libre);
-    /*setInterval(function(){
-        
-    }, 1500);*/
-    
+    UpdateChart(Ocupado,Libre);    
 }   
 
 function UpdateAllProcess(Ocupado)
 {
-    AllProcess.forEach(
-        item=>{
-
-            if(TABLE.rows('[id='+item.Pid+']').any())
-            {
-                var ROW_SELECTED =TABLE.row(item.Pid);
-                
-                try {
-                    var datax=[
-                        item.Pid,
-                        item.Name,
-                        item.Uid,
-                        item.State,
-                        processPercentageRAM(item.VmRSS),                    
-                        function ( data, type, row ) {
-                              return '<button type="button" onClick="killProcess(this.id)" id="'+item.Pid+'" class="btn btn-danger">Eliminar</button>';
-                        }     
-                    ];
-
-                    ROW_SELECTED.data(datax).draw();
-                    
-                } catch (error) {
-
-                    TABLE
-                    .row( ROW_SELECTED )
-                    .remove()
-                    .draw();
-
-                    var newRow = TABLE.row.add(
-                        [
-                            item.Pid,
-                            item.Name,
-                            item.Uid,
-                            item.State,
-                            processPercentageRAM(item.VmRSS),                    
-                            function ( data, type, row ) {
-                                  return '<button type="button" onClick="killProcess(this.id)" id="'+item.Pid+'" class="btn btn-danger">Eliminar</button>';
-                            }
-                              
-                        ]
-                    ).draw();
-                    newRow.nodes().to$().attr('id',item.Pid);   
-                }
-                
-
-            }
+    AllProcess.forEach(item=>{
+        try {
+            document.getElementById("percentage_"+item.Pid).textContent = processPercentageRAM(item.VmRSS);
+            document.getElementById("state_"+item.Pid).textContent = item.State;
+            document.getElementById("uid_"+item.Pid).textContent = item.Uid;    
+        } catch (error) {
         }
-    );
-    //
+        
+    });    
 }
 
 function UpdateChart(Ocupado,Libre)
@@ -238,25 +194,6 @@ function plot_performanceCPU(data)
 function loadProcess()
 {
     socket.emit('getLogin', {});
-
-    if(TABLE==null)
-    {
-        
-        $(document).ready( function () {
-            var jsonArray = {"Columns":[{"name":"ID","field":"id"},{"name":"Nombre","field":"nombre"},{"name":"Usuario","field":"usuario"},{"name":"Estado","field":"estado"},{"name":"RAM %","field":"ram"},{"name":"Kill","field":"kill"}]};
-            var columnArray = jsonArray['Columns'];
-            var titleArray = [];
-            for (var j = 0; j < columnArray.length; j++) {
-                var temp = {};
-                temp['title'] = columnArray[j]["name"];
-                titleArray.push(temp);
-            };
-
-            TABLE = $('#tableProcess').DataTable({ "columns": titleArray});
-            
-        } ); 
-        
-    }
     socket.emit('getAllProcess', {});
 }
 
@@ -264,31 +201,20 @@ function loadProcess()
 function paintInfoProcess(data)
 {   
     AllProcess = data;
+    document.getElementById("bodyListProcess").innerHTML='';
     data.forEach(
         item =>{
-            
-            if(!TABLE.rows('[id='+item.Pid+']').any()) 
-            {
-                try {
-                    var newRow = TABLE.row.add(
-                        [
-                            item.Pid,
-                            item.Name,
-                            item.Uid,
-                            item.State,
-                            processPercentageRAM(item.VmRSS),                    
-                            function ( data, type, row ) {
-                                  return '<button type="button" onClick="killProcess(this.id)" id="'+item.Pid+'" class="btn btn-danger">Eliminar</button>';
-                            }
-                              
-                        ]
-                    ).draw();
-                    newRow.nodes().to$().attr('id',item.Pid);   
-                     
-                } catch (error) {
-                }    
+
+                var html = '<tr id="'+item.Pid+'">';
+                html+='<td>'+item.Pid+'</td>';
+                html+='<td>'+item.Name+'</td>';
+                html+='<td id="uid_'+item.Pid+'">'+item.Uid+'</td>';
+                html+='<td id="state_'+item.Pid+'">'+item.State+'</td>';
+                html+='<td id="percentage_'+item.Pid+'">'+processPercentageRAM(item.VmRSS)+'</td>';
+                html+='<td><button type="button" onClick="killProcess(this.id)" id="'+item.Pid+'" class="btn btn-danger">Eliminar</button></td>';
+                html+='</tr>';
+                document.getElementById("bodyListProcess").innerHTML+=html;
             }
-        }
     );
 }
 
@@ -315,26 +241,15 @@ function paintInfoSummary(data)
 
 function killProcess(id)
 {
-    try {
-        
-        eliminarRow(id);
-        TABLE.row(id).remove().draw();
-        TABLE.draw();
-
-        socket.emit('killingProcess',{'id':parseInt(id,10) });
-
-        
-
-    } catch (error) {
-        
-    }
+    eliminarRow(id);    
+    socket.emit('killingProcess',{'id':parseInt(id,10) });
 }
 
 
 function eliminarRow(id)
 {
     var body = document.getElementById("bodyListProcess");
-    body.removeChild(document.getElementById(id))
+    body.removeChild(document.getElementById(id));
 }
 
 

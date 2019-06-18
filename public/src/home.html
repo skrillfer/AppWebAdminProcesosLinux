@@ -10,12 +10,6 @@
         <link rel="stylesheet" href="/src/CSS/bootstrap.min.css" >
         <script src="/src/JS/bootstrap.min.js" ></script>
         
-         <!--
-            DataTables
-        -->
-
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 
         <script src="/socket.io/socket.io.js"></script>
         <script src ="/javascript/client.js"></script>
@@ -95,7 +89,13 @@
                     
                     <hr/>
                     <h3>Todos Los Procesos</h3>
+                    <div class="input-group col-md-4">
+                            <input class="form-control py-2 border-right-0 border" type="search" value="search" id="example-search-input">
+                            <span class="glyphicon glyphicon-search">
+                            </span>
+                    </div>
                     <table class="table" id="tableProcess">
+                            
                             <thead class="thead-dark">
                               <tr>
                                 <th>Pid</th>
