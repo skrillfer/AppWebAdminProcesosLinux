@@ -24,7 +24,7 @@
     "url": "https://github.com/skrillfer/AppWebAdminProcesosLinux/issues"
   },
   "dependencies": {
-    "express": "~4.17.1",
+    "express": "~4.17.3",
     "log-timestamp": "~0.3.0",
     "node-watch": "~0.6.2",
     "socket.io": "^2.2.0"
